@@ -1,11 +1,14 @@
-import { Component, ViewChild, OnInit, ElementRef } from '@angular/core';
-import { NgForm } from "@angular/forms";
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
+import { debounceTime } from "rxjs/operators";
 
 import { DataService } from '../../../services/data.service';
 import { ToastService } from '../../../services/toast.service';
 
-import * as WordCloud from "wordcloud";
-import { Router } from '@angular/router';
+import { Counterparty } from 'app/shared/schema/counterparty';
+
+import { Word } from 'app/shared/components/word-cloud/word-cloud.component';
 
 @Component({
 	moduleId: module.id,
@@ -17,59 +20,62 @@ export class CounterpartySearchComponent implements OnInit {
 
 	results: any[];
 
-	wordcloudMinSize = 10;
-	wordcloudMaxSize = 70;
-	wordcloudMinOpacity = 0.2;
-	wordcloudMaxOpacity = 1;
+	supplierQuery: BehaviorSubject<string> = new BehaviorSubject("");
+	supplierQueryFocus: boolean = false;
+	supplierSelected: number = 0;
 
-	@ViewChild("wordcloud") wordcloudEl: ElementRef<HTMLElement>;
+	wordcloudCounterparties:Counterparty[]; // save so we can lookup on click
+	wordcloud:Word[] = [];
 
 	constructor(private dataService: DataService, private toastService: ToastService, private router:Router) { }
 
 	ngOnInit(){
-		this.createWordcloud();
+		this.loadTopCounterparties();
+
+		this.supplierQuery.pipe(debounceTime(500)).subscribe(query => this.querySupplier(query));
 	}
 
-	search(form: NgForm) {
-
-		var formData = form.value;
-
-		this.dataService.searchCounterparties(formData.query)
-			.then(results => this.results = results)
-			.catch(err => this.toastService.toast("Nastal chyba při vyhledávání dodavatelů.", "error"));
-	}
-
-	async createWordcloud() {
+	async loadTopCounterparties(){
 		const counterparties = await this.dataService.getCounterpartiesTop();
-		
 
-		const max = counterparties.reduce((acc,cur) => Math.max(cur.amount,acc),0);
-
-		const replaced = ["spol\\. s r\\.o\\.","a\\. ?s\\.","s\\.? ?r\\. ?o\\.","JUDR\\.","příspěvková organizace",","].map(string => new RegExp(string,"i"));
+		const removeStrings = ["spol\\. s r\\.o\\.", "a\\. ?s\\.", "s\\.? ?r\\. ?o\\.", "s\\. ?p\\.", "JUDR\\.", "příspěvková organizace", ","].map(string => new RegExp(string, "i"));
 
 		counterparties.forEach(counterparty => {
-			replaced.forEach(replace => counterparty.name = counterparty.name.replace(replace,""))
-			counterparty.name = counterparty.name.trim();
+      removeStrings.forEach(removeString => counterparty.name = counterparty.name.replace(removeString, ""))
+      counterparty.name = counterparty.name.trim();
 		})
 
-		const list = counterparties.map(counterparty => [counterparty.name, Math.round((1 - counterparty.amount / max) * this.wordcloudMinSize + counterparty.amount / max * this.wordcloudMaxSize)]);
+		// save so we can lookup on word click
+		this.wordcloudCounterparties = counterparties;
 
-		const options = {
-			list,		
-			rotateRatio:0,	
-			color: (word, weight, fontSize, distance, theta) => `rgba(37, 129, 196, ${(1 - (fontSize - this.wordcloudMinSize) / (this.wordcloudMaxSize - this.wordcloudMinSize)) * this.wordcloudMinOpacity + ((fontSize - this.wordcloudMinSize) / (this.wordcloudMaxSize - this.wordcloudMinSize)) * this.wordcloudMaxOpacity})`,
-			classes: "word",
-			click: (item, dimension, event) => {
-				const counterparty = counterparties.find(counterparty => counterparty.name === item[0]);
-				if(!counterparty) return;
-				this.openCounterparty(counterparty._id);
-			}
-		};
+		this.wordcloud = this.wordcloudCounterparties.map(counterparty => [counterparty.name,counterparty.amount] as [string,number]);
 
-		WordCloud(this.wordcloudEl.nativeElement, options );
+	}
+
+	openWord(word:Word){
+		const counterparty = this.wordcloudCounterparties.find(counterparty => counterparty.name === word[0]);
+		if(counterparty) this.openCounterparty(counterparty._id)
 	}
 
 	openCounterparty(counterpartyId:string){
 		this.router.navigate(["/dodavatele",counterpartyId]);
+	}
+
+	querySupplier(query:string) {
+		this.supplierSelected = 0;
+
+		if (query!='') this.supplierQueryFocus=true;
+
+		this.dataService.searchCounterparties(query)
+			.then(results => this.results = results)
+			.catch(err => this.toastService.toast("Nastal chyba při vyhledávání dodavatelů.", "error"));
+	}
+
+	selectSupplier(direction:string) {
+		if (direction == 'up' && this.supplierSelected>0) this.supplierSelected--;
+		if (direction == 'down' && this.supplierSelected<(this.results.length-1)) this.supplierSelected++;
+		if (direction == 'route' && this.supplierQueryFocus) {
+			this.router.navigate(['/dodavatele/' + this.results[this.supplierSelected].counterpartyId]);
+		}
 	}
 }

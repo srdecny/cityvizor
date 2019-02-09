@@ -74,7 +74,7 @@ import { routing } from './app-routing.module';
 
 // App Config
 import { AppConfig, AppConfigData } from "../config/config";
-import { WordCloudComponent } from './app/shared/word-cloud/word-cloud.component';
+import { CounterpartyViewDashboardComponent } from './views/counterparty-view/counterparty-view-dashboard/counterparty-view-dashboard.component';
 
 // settings for JWT
 export function tokenGetter(): string {
@@ -111,7 +111,7 @@ var jwtOptions = {
 		/* ADMIN */ SiteAdminProfilesComponent, SiteAdminProfileComponent, SiteAdminUsersComponent, SiteAdminUserComponent,
     	/* Equaliser Component */ EasterEggEqualiserComponent,
 		/* Service Desk */ UserAdminAccountComponent,
-		/* Shared Components */ LoginFormComponent, HeaderMenuComponent, ProfileHeaderComponent, WordCloudComponent,
+		/* Shared Components */ LoginFormComponent, HeaderMenuComponent, ProfileHeaderComponent, CounterpartyViewDashboardComponent,
 	],
 	entryComponents: [
 	],
