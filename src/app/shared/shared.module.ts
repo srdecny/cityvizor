@@ -20,6 +20,7 @@ import { WordCloudComponent } from "./components/word-cloud/word-cloud.component
 import { MoneyPipe } from './pipes/money.pipe';
 import { AddressPipe, PostalCodePipe } from './pipes/address.pipe';
 import { IcoPipe, AbsPipe, ConcatPipe, ArrayChildrenPipe, ArrayPipe } from './pipes/utils.pipe';
+import { ChartBubbleComponent } from './components/chart-bubble/chart-bubble.component';
 
 @NgModule({
   imports: [
@@ -30,12 +31,12 @@ import { IcoPipe, AbsPipe, ConcatPipe, ArrayChildrenPipe, ArrayPipe } from './pi
   ],
   declarations: [
     /* Shared Components */ ChartBigbangComponent, ChartDonutComponent, ChartBudgetComponent, ChartEventOverviewComponent, BudgetsListComponent, HelpModalComponent, ChartHistoryComponent, WordCloudComponent,
-    /* Shared Pipes */ MoneyPipe, IcoPipe, AbsPipe, ConcatPipe, ArrayChildrenPipe, AddressPipe, PostalCodePipe, ArrayPipe
+    /* Shared Pipes */ MoneyPipe, IcoPipe, AbsPipe, ConcatPipe, ArrayChildrenPipe, AddressPipe, PostalCodePipe, ArrayPipe, ChartBubbleComponent
   ],
   exports: [
     FormsModule,
     ButtonsModule, CollapseModule, BsDropdownModule, TabsModule,
-    /* Shared Components */ ChartBigbangComponent, ChartDonutComponent, ChartBudgetComponent, ChartEventOverviewComponent, BudgetsListComponent, HelpModalComponent, ChartHistoryComponent, WordCloudComponent,
+    /* Shared Components */ ChartBigbangComponent, ChartDonutComponent, ChartBudgetComponent, ChartEventOverviewComponent, BudgetsListComponent, HelpModalComponent, ChartHistoryComponent, WordCloudComponent, ChartBubbleComponent,
     /* Shared Pipes */ MoneyPipe, IcoPipe, AbsPipe, ConcatPipe, ArrayChildrenPipe, AddressPipe, PostalCodePipe, ArrayPipe
   ]
 })

@@ -1,5 +1,14 @@
 <div class="container">
   <h2>Roční srovnání</h2>
-  <h2>Druhévé třídění</h2>
+  
+  <div class="bubbles">
+    <chart-bubble *ngFor="let yearAmount of years" [size]="yearAmount.amount / maxYearAmount * 100" color="#09f"></chart-bubble>
+  </div>
+  
+  <h2>Města a obce</h2>
+
+  <div class="bubbles">
+    <chart-bubble *ngFor="let profile of profiles" [size]="profile.amount / maxProfileAmount * 100" color="#09f"></chart-bubble>
+  </div>
 
 </div>
