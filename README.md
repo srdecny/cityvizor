@@ -26,6 +26,8 @@ npm run build   # kompilace kódu
 npm run create-admin
 ```
 
+Vytvoří uživatele admin s heslem admin
+
 #### Konfigurace
 
 ##### Prostředí
@@ -39,6 +41,8 @@ NODE_ENV=production        # Linux & Mac
 $end:NODE_ENV="production" # Windows PowerShell
 set NODE_ENV=production    # Windows Command Prompt
 ```
+
+Přednastavené je pouze prostředí `local`.
 
 ##### Obecná nastavení
 
@@ -60,13 +64,21 @@ npm start
 
 ## Lokální vývoj
 
-### Klient
+### Pouze frontend (bez lokálního serveru, použije se dev.cityvizor.cz)
+```sh
+cd client
+ng serve --configuration=local
+```
+
+### Frontend i backend
+
+Frontend:
 ```sh
 cd client
 ng serve --configuration=local-server
 ```
 
-### Server
+Backend:
 ```sh
 $env:NODE_ENV="local" # ve Windows v PowerShellu
 set NODE_ENV=local    # ve Windows v příkazovém řádku

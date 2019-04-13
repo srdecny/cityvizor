@@ -1,8 +1,10 @@
 const path = require("path");
 
 module.exports = {
-
-  storageDir: path.resolve(__dirname, "../../data"),
+  
+  port: 4300,
+  host: "localhost",
+  
   tmpDir: path.resolve(__dirname, "../../data/tmp"),
 
   staticFiles: path.resolve(__dirname, "../../client/dist"),
