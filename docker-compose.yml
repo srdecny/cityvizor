@@ -41,8 +41,6 @@ services:
     container_name: server.cityvizor.cesko.digital
     environment:
       NODE_ENV: local
-    ports:
-      - 3000:3000
     volumes:
       - ./data:/user/src/app/data
     depends_on: 
