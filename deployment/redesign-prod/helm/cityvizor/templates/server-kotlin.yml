@@ -25,6 +25,8 @@ spec:
     metadata:
       labels:
         app: server-kotlin
+    annotations:
+      date/deploy-date: {{ now | quote }}
     spec:
       containers:
         - name: server-kotlin

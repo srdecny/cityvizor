@@ -48,3 +48,13 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+keel:
+  policy: "force"
+  match-tag: "true"
+  trigger: "poll"
+  pollSchedule: "@every 1m"
+  # images to track and update
+  images:
+    - repository: cityvizor/server-kotlin
+      tag: master
