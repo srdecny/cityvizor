@@ -34,6 +34,13 @@ spec:
           image: {{ .Values.landing_page.image }}:{{ .Values.landing_page.tag }}
           ports:
             - containerPort: 80
+          {{- if .Values.is_test_instance -}}
+          env:
+            - name: LANDING_DOCKER_IMAGE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.image
+          {{- end -}}
           imagePullPolicy: Always
           livenessProbe:
             httpGet:

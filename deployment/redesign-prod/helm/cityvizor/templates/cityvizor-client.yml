@@ -35,6 +35,12 @@ spec:
           env:
             - name: NODE_ENV
               value: "prod"
+            {{- if _Values.is_test_instance -}}
+            - name: CLIENT_DOCKER_IMAGE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.image
+            {{- end -}}
           ports:
             - containerPort: 80
           imagePullPolicy: Always
